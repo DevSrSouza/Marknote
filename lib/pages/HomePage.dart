@@ -8,7 +8,7 @@ class HomePage extends StatefulWidget {
   final Icon themeIndicator;
   final VoidCallback switchTheme;
 
-  HomePage(this.themeIndicator, this.switchTheme);
+  const HomePage(this.themeIndicator, this.switchTheme, {Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
           title: Text("MarkNote"),
           centerTitle: true,
           actions: <Widget>[
@@ -62,9 +61,13 @@ class _HomePageState extends State<HomePage> {
         ),
         //controller: _scrollController,
         // padding: const EdgeInsets.fromLTRB(18, 30, 18, 18),
-      body: Container(
-          padding: const EdgeInsets.fromLTRB(18, 30, 18, 18),
-        child: DragAndDropList(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(18, 30, 18, 18),
+        child: Column(
+          children: _cards.map((e) => NoteCard(e)).toList(),
+        ),
+      )
+        /*child: DragAndDropList(
             _cards.length,
             scrollController: _scrollController,
             onDragFinish: (before, after) {
@@ -78,11 +81,11 @@ class _HomePageState extends State<HomePage> {
             canBeDraggedTo: (one, two) => true,
             dragElevation: 5.0,
             itemBuilder: (context, index) => NoteCard(_cards[index], key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()))
-        ),
+        )*/,
         //onReorder: (int actual, int next) {},
         //children: _cards.map((e) => NoteCard(e, key: Key(DateTime.now().millisecondsSinceEpoch.toString()))).toList(),
         //scrollDirection: Axis.vertical,
-      ),
+      //),
     );
   }
 }
