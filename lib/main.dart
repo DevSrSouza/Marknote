@@ -7,8 +7,19 @@ void main() => runApp(
 
 class MarkNote extends StatefulWidget {
 
-  final ThemeData dark = ThemeData.dark().copyWith(accentColor: Colors.deepPurple, cardColor: Colors.grey.shade800);
-  final ThemeData light = ThemeData.light().copyWith(accentColor: Colors.deepPurple);
+  final ThemeData dark = ThemeData.dark().copyWith(
+      primaryColor: Colors.deepPurple,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.deepPurple
+      ),
+      cardColor: Colors.grey.shade800
+  );
+  final ThemeData light = ThemeData.light().copyWith(
+      primaryColor: Colors.deepPurple,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.deepPurple
+      )
+  );
 
   @override
   _MarkNoteState createState() => _MarkNoteState();
