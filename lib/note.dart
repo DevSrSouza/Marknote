@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Note {
   String source;
-  Color color;
+  MaterialColor color;
 
   var edit = false;
 
