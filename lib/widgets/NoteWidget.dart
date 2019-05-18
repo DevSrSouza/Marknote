@@ -36,6 +36,10 @@ class _NoteWidgetState extends State<NoteWidget> {
       widget.note.source = _editController.text;
     });
   }
+  
+  void _removeColor() {
+    _switchColor(null);
+  }
 
   void _switchColor(MaterialColor color) {
     if(widget.note.color == color) return; // not rebuild widget if same color
@@ -145,9 +149,7 @@ class _NoteWidgetState extends State<NoteWidget> {
   Widget _colorSwitcher(MaterialColor color) => _smallIconButton(
       Icons.invert_colors,
       color,
-          () {
-        _switchColor(color);
-      }
+      () {_switchColor(color);}
   );
 
   Widget _defaultColor(BuildContext context) {
@@ -155,7 +157,7 @@ class _NoteWidgetState extends State<NoteWidget> {
     return _smallIconButton(
       Icons.invert_colors_off,
       theme.iconTheme.color,
-          () {_switchColor(theme.cardColor);},
+      () {_removeColor();},
     );
   }
 }
