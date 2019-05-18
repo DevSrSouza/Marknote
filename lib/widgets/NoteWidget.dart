@@ -99,7 +99,10 @@ class _NoteWidgetState extends State<NoteWidget> {
             maxLines: null,
             keyboardType: TextInputType.multiline,
             controller: _editController,
-            style: TextStyle(fontSize: 19),
+            style: TextStyle(
+                fontSize: 19,
+                fontFamily: "SourceCodePro"
+            ),
             decoration: InputDecoration(
               border: InputBorder.none,
             ),
@@ -117,7 +120,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                   ]
               ),
               code: TextStyle(
-                  fontFamily: "Source Code Pro"
+                  fontFamily: "SourceCodePro"
               ),
               codeblockDecoration: new BoxDecoration(
                   color: Theme.of(context).cardColor,
