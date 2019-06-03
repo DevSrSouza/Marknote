@@ -26,22 +26,23 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.note,
-      child: Material(
-        color: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 25),
-          child: Container(
-            child: NoteWidget(
-              widget.note,
-              actions: <Widget>[
-                SmallIcon(
-                  Icon(Icons.fullscreen_exit),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-              onSwitchColor: _switchColor,
+      child: Scaffold(
+        backgroundColor: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              child: NoteWidget(
+                widget.note,
+                actions: <Widget>[
+                  SmallIcon(
+                    Icon(Icons.fullscreen_exit),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+                onSwitchColor: _switchColor,
+              ),
             ),
           ),
         ),
