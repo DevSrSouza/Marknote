@@ -26,31 +26,39 @@ class _NoteCardState extends State<NoteCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(bottom: 20),
-        child: Hero(
-          tag: widget.note,
-          child: Card(
-            color: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
-            elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 5, 12, 29),
-              child: NoteWidget(
-                  widget.note,
-                  onSwitchColor: _switchColor,
-                  actions: <Widget>[
-                    SmallIcon(
-                      Icon(Icons.fullscreen),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FullscreenNotePage(widget.note)));
-                      },
-                    )
-                  ],
+    return GestureDetector(
+      onScaleUpdate: (details) {
+        if(details.horizontalScale > 1.1 && details.verticalScale > 1.1)
+          _moveToFullscreen();
+      },
+      child: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          child: Hero(
+            tag: widget.note,
+            child: Card(
+              color: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 5, 12, 29),
+                child: NoteWidget(
+                    widget.note,
+                    onSwitchColor: _switchColor,
+                    actions: <Widget>[
+                      SmallIcon(
+                        Icon(Icons.fullscreen),
+                        onPressed: _moveToFullscreen,
+                      )
+                    ],
+                ),
               ),
             ),
-          ),
-        )
+          )
+      ),
     );
+  }
+
+  void _moveToFullscreen() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FullscreenNotePage(widget.note)));
   }
 }

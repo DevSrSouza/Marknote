@@ -24,24 +24,31 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: widget.note,
-      child: Scaffold(
-        backgroundColor: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              child: NoteWidget(
-                widget.note,
-                actions: <Widget>[
-                  SmallIcon(
-                    Icon(Icons.fullscreen_exit),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-                onSwitchColor: _switchColor,
+    return GestureDetector(
+      onScaleUpdate: (details) {
+        if(details.horizontalScale < 0.9 && details.verticalScale < 0.9) {
+          Navigator.pop(context);
+        }
+      },
+      child: Hero(
+        tag: widget.note,
+        child: Scaffold(
+          backgroundColor: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                child: NoteWidget(
+                  widget.note,
+                  actions: <Widget>[
+                    SmallIcon(
+                      Icon(Icons.fullscreen_exit),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                  onSwitchColor: _switchColor,
+                ),
               ),
             ),
           ),
