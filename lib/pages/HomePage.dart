@@ -27,14 +27,14 @@ class _HomePageState extends State<HomePage> {
   
   void _createNewCard() {
     setState(() {
-      _cards.add(Note("# Write here!"));
+      _cards.insert(0, Note("# Write here!"));
     });
 
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       var scrollPosition = _scrollController.position;
-      if(scrollPosition.viewportDimension < scrollPosition.maxScrollExtent) {
+      if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
         _scrollController.animateTo(
-            scrollPosition.maxScrollExtent,
+            scrollPosition.minScrollExtent,
             duration: new Duration(milliseconds: 300),
             curve: Curves.easeOut
         );
@@ -59,10 +59,9 @@ class _HomePageState extends State<HomePage> {
           child: Icon(Icons.add),
           onPressed: _createNewCard,
         ),
-        //controller: _scrollController,
-        // padding: const EdgeInsets.fromLTRB(18, 30, 18, 18),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(18, 30, 18, 18),
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(30, 30, 30, 18),
         child: Column(
           children: _cards.map((e) => NoteCard(e)).toList(),
         ),
