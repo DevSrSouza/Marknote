@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marknote/note.dart';
-import 'package:marknote/widgets/NoteWidget.dart';
-import 'package:marknote/widgets/SmallIcon.dart';
+import 'package:marknote/ui/widgets/NoteWidget.dart';
+import 'package:marknote/ui/widgets/SmallIcon.dart';
 
 class FullscreenNotePage extends StatefulWidget {
 

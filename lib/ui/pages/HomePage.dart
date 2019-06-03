@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marknote/note.dart';
-import 'package:marknote/widgets/NoteCard.dart';
+import 'package:marknote/ui/widgets/NoteCard.dart';
 import 'package:dragable_flutter_list/dragable_flutter_list.dart';
 
 class HomePage extends StatefulWidget {
