@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:marknote/note.dart';
-import 'package:marknote/ui/pages/FullscreenNotePage.dart';
-import 'package:marknote/ui/widgets/NoteWidget.dart';
-import 'package:marknote/ui/widgets/SmallIcon.dart';
+import 'package:marknote/ui/pages/fullscreen_note_page.dart';
+import 'package:marknote/ui/widgets/note_widget.dart';
+import 'package:marknote/ui/widgets/small_icon.dart';
 
 class NoteCard extends StatefulWidget {
 

@@ -3,7 +3,7 @@ import 'package:marknote/note.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'SmallIcon.dart';
+import 'package:marknote/ui/widgets/small_icon.dart';
 
 typedef ColorSwitchCallback = void Function(MaterialColor color);
 

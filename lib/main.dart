@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marknote/ui/pages/HomePage.dart';
+import 'package:marknote/ui/pages/home_page.dart';
 
 void main() => runApp(
   MarkNote()
