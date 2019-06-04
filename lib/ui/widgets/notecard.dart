@@ -17,7 +17,7 @@ class NoteCard extends StatefulWidget {
 
 class _NoteCardState extends State<NoteCard> {
 
-  void _switchColor(MaterialColor color) {
+  void _switchColor(NoteColor color) {
     if(widget.note.color == color) return; // not rebuild widget if same color
     setState(() {
       widget.note.color = color;
@@ -36,7 +36,7 @@ class _NoteCardState extends State<NoteCard> {
           child: Hero(
             tag: widget.note,
             child: Card(
-              color: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
+              color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
               elevation: 3,
               child: Padding(

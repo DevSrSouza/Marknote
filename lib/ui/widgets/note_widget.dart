@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:marknote/ui/widgets/small_icon.dart';
 
-typedef ColorSwitchCallback = void Function(MaterialColor color);
+typedef ColorSwitchCallback = void Function(NoteColor color);
 
 class NoteWidget extends StatefulWidget {
 
@@ -41,7 +41,7 @@ class _NoteWidgetState extends State<NoteWidget> {
     _switchColor(null);
   }
 
-  void _switchColor(MaterialColor color) {
+  void _switchColor(NoteColor color) {
     if(widget.note.color == color) return; // not rebuild widget if same color
 
     if(widget.onSwitchColor != null)
@@ -63,11 +63,8 @@ class _NoteWidgetState extends State<NoteWidget> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     _defaultColor(context),
-                    _colorSwitcher(Colors.red),
-                    _colorSwitcher(Colors.green),
-                    _colorSwitcher(Colors.blue),
-                    _colorSwitcher(Colors.deepOrange),
-                    _colorSwitcher(Colors.deepPurple),
+                    for(NoteColor color in NoteColor.values)
+                      _colorSwitcher(color)
                   ],
                 ),
               ),
@@ -110,7 +107,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             data: widget.note.source,
             styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
               blockquoteDecoration: new BoxDecoration(
-                  color: widget.note.color?.shade400 ?? Theme.of(context).cardColor,
+                  color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade400 ?? Theme.of(context).cardColor,
                   borderRadius: new BorderRadius.circular(13.0),
                   boxShadow: [
                     BoxShadow(
@@ -149,9 +146,9 @@ class _NoteWidgetState extends State<NoteWidget> {
     onPressed: onTap,
   );
 
-  Widget _colorSwitcher(MaterialColor color) => _smallIconButton(
+  Widget _colorSwitcher(NoteColor color) => _smallIconButton(
       Icons.invert_colors,
-      color,
+      NoteColorHelper.getMaterialColor(color),
       () {_switchColor(color);}
   );
 

@@ -15,7 +15,7 @@ class FullscreenNotePage extends StatefulWidget {
 
 class _FullscreenNotePageState extends State<FullscreenNotePage> {
 
-  void _switchColor(MaterialColor color) {
+  void _switchColor(NoteColor color) {
     if(widget.note.color == color) return; // not rebuild widget if same color
     setState(() {
       widget.note.color = color;
@@ -33,7 +33,7 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
       child: Hero(
         tag: widget.note,
         child: Scaffold(
-          backgroundColor: widget.note.color?.shade300 ?? Theme.of(context).cardColor,
+          backgroundColor: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Container(
