@@ -1,4 +1,4 @@
-package com.example.marknote
+package br.com.devsrsouza.marknote
 
 import android.os.Bundle
 
