@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
 import 'package:marknote/ui/widgets/note_widget.dart';
 import 'package:marknote/ui/widgets/small_icon.dart';
@@ -19,6 +20,8 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
     if(widget.note.color == color) return; // not rebuild widget if same color
     setState(() {
       widget.note.color = color;
+
+      NoteHelper().updateColor(widget.note);
     });
   }
 

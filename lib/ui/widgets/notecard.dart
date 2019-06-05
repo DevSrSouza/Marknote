@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
 import 'package:marknote/ui/pages/fullscreen_note_page.dart';
 import 'package:marknote/ui/widgets/note_widget.dart';
@@ -21,6 +22,8 @@ class _NoteCardState extends State<NoteCard> {
     if(widget.note.color == color) return; // not rebuild widget if same color
     setState(() {
       widget.note.color = color;
+
+      NoteHelper().updateColor(widget.note);
     });
   }
 

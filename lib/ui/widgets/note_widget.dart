@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,9 +32,11 @@ class _NoteWidgetState extends State<NoteWidget> {
 
   void _switchToEditMode() {
     setState(() {
-      widget.note.edit = !widget.note.edit;
+      final note = widget.note;
+      note.edit = !note.edit;
 
-      widget.note.source = _editController.text;
+      note.source = _editController.text;
+      if(note.edit == false) NoteHelper().updateSource(note);
     });
   }
   
