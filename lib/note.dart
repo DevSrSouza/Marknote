@@ -21,10 +21,11 @@ class NoteColorHelper {
 }
 
 class Note {
+  final int id;
   String source;
   NoteColor color;
 
   var edit = false;
 
-  Note(this.source, { this.color });
+  Note(this.id, this.source, this.color);
 }
