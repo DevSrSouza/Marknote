@@ -24,8 +24,9 @@ class Note {
   final int id;
   String source;
   NoteColor color;
+  DateTime createTime;
 
   var edit = false;
 
-  Note(this.id, this.source, this.color);
+  Note(this.id, this.source, this.color, this.createTime);
 }

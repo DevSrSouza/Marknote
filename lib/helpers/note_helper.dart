@@ -12,6 +12,7 @@ final noteTable = "notes";
 final idColumn = "_id";
 final sourceColumn = "source";
 final colorColumn = "color";
+final createTimeColumn = "createTime";
 
 class NoteHelper {
   static final NoteHelper _instance = NoteHelper.internal();
@@ -38,7 +39,8 @@ class NoteHelper {
       String createTable = "CREATE TABLE $noteTable ("
           "$idColumn INTEGER  primary key autoincrement not null, "
           "$sourceColumn TEXT not null, "
-          "$colorColumn INT"
+          "$colorColumn INT, "
+          "$createTimeColumn INT not null"
           ")";
 
       await db.execute(createTable);
@@ -50,18 +52,23 @@ class NoteHelper {
     return Note(
       map[idColumn],
       map[sourceColumn],
-      colorId != null ? NoteColor.values[colorId] : null
+      colorId != null ? NoteColor.values[colorId] : null,
+      DateTime.fromMillisecondsSinceEpoch(map[createTimeColumn])
     );
   }
 
-  Future<Note> newNote(String source) async {
+  Future<Note> newNote(String source, {NoteColor color, DateTime createTime}) async {
     Database con = await database;
 
+    final time = createTime ?? DateTime.now();
+
     int id = await con.insert(noteTable, {
-      sourceColumn: source ?? ""
+      sourceColumn: source ?? "",
+      colorColumn: color.index,
+      createTimeColumn: time.millisecondsSinceEpoch
     });
 
-    return Note(id, source ?? "", null);
+    return Note(id, source ?? "", color, time);
   }
 
   Future<void> updateSource(Note note) async {
