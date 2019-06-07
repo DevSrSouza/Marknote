@@ -9,8 +9,9 @@ import 'package:marknote/ui/widgets/small_icon.dart';
 class NoteCard extends StatefulWidget {
 
   final Note note;
+  final void Function() onScaleFullscreen;
 
-  const NoteCard(this.note, {Key key}) : super(key: key);
+  const NoteCard(this.note, {Key key, this.onScaleFullscreen}) : super(key: key);
 
   @override
   _NoteCardState createState() => _NoteCardState();
@@ -31,8 +32,10 @@ class _NoteCardState extends State<NoteCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onScaleUpdate: (details) {
-        if(details.horizontalScale > 1.1 && details.verticalScale > 1.1)
+        if(details.horizontalScale > 1.1 && details.verticalScale > 1.1) {
+          if(widget.onScaleFullscreen != null) widget.onScaleFullscreen();
           _moveToFullscreen();
+        }
       },
       child: Container(
           padding: EdgeInsets.only(bottom: 20),
@@ -40,7 +43,7 @@ class _NoteCardState extends State<NoteCard> {
             tag: widget.note,
             child: Card(
               color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(23.0)),
               elevation: 3,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 5, 12, 29),
