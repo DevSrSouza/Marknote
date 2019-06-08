@@ -10,8 +10,9 @@ class NoteCard extends StatefulWidget {
 
   final Note note;
   final void Function() onScaleFullscreen;
+  final BorderSide side;
 
-  const NoteCard(this.note, {Key key, this.onScaleFullscreen}) : super(key: key);
+  const NoteCard(this.note, {Key key, this.onScaleFullscreen, this.side}) : super(key: key);
 
   @override
   _NoteCardState createState() => _NoteCardState();
@@ -43,7 +44,10 @@ class _NoteCardState extends State<NoteCard> {
             tag: widget.note,
             child: Card(
               color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(23.0)),
+              shape: RoundedRectangleBorder(
+                  side: widget.side ?? BorderSide.none,
+                  borderRadius: BorderRadius.circular(23.0)
+              ),
               elevation: 3,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 5, 12, 29),

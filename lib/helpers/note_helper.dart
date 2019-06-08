@@ -64,7 +64,7 @@ class NoteHelper {
 
     int id = await con.insert(noteTable, {
       sourceColumn: source ?? "",
-      colorColumn: color.index,
+      colorColumn: color?.index,
       createTimeColumn: time.millisecondsSinceEpoch
     });
 

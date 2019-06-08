@@ -18,33 +18,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _scrollController = ScrollController();
   var _cardsloaded = false;
 
   List<Note> _cards = [];
 
-  void _createNewCard() {
-    NoteHelper().newNote("# Write here!").then((note) {
-      setState(() {
-        _cards.insert(0, note);
-      });
-
-      Future.delayed(Duration(milliseconds: 100)).then((value) {
-        var scrollPosition = _scrollController.position;
-        if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
-          _scrollController.animateTo(
-              scrollPosition.minScrollExtent,
-              duration: new Duration(milliseconds: 300),
-              curve: Curves.easeOut
-          );
-        }
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("MarkNote"),
           centerTitle: true,
@@ -82,15 +65,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _createNewCard() {
+    NoteHelper().newNote("# Write here!").then((note) {
+      setState(() {
+        _cards.add(note);
+      });
+
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        var scrollPosition = _scrollController.position;
+        if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
+          _scrollController.animateTo(
+              scrollPosition.maxScrollExtent,
+              duration: new Duration(milliseconds: 300),
+              curve: Curves.easeOut
+          );
+        }
+      });
+    });
+  }
+
+  int _selectedNoteIndex = null;
+
   Widget _cardsListView() => _cards.isNotEmpty ? ListView.builder(
     controller: _scrollController,
     padding: const EdgeInsets.fromLTRB(30, 30, 30, 18),
     itemCount: _cards.length,
     shrinkWrap: true,
+    reverse: true,
     itemBuilder: (context, index) {
-      return NoteCard(
-          _cards[index],
-          key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString())
+      return GestureDetector(
+        onLongPress: () {
+          _showOptions(context, index);
+        },
+        child: NoteCard(
+            _cards[index],
+            key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()),
+            side: _selectedNoteIndex == index ? BorderSide(
+              color: Colors.grey.shade500,
+              width: 4
+            ) : BorderSide.none,
+        ),
       );
     },
   ) : Center(
@@ -153,5 +167,106 @@ class _HomePageState extends State<HomePage> {
         },
       );
     }
+  }
+
+  void _showOptions(BuildContext context, int index) {
+    setState(() {
+      _selectedNoteIndex = index;
+    });
+    Future<void> modal = showModalBottomSheet<void>(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            elevation: 4,
+            onClosing: () { // not working: https://github.com/flutter/flutter/issues/27600
+              setState(() {
+                _selectedNoteIndex = null;
+              });
+            },
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(2),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Text(
+                        "Options",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.content_copy),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _copyNote(index);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _deleteNote(index);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    );
+
+    modal.then((void v) => setState((){
+      _selectedNoteIndex = null;
+    }));
+  }
+
+  Note _lastRemovedNote;
+  int _lastRemovedIndex;
+
+  void _deleteNote(int index) {
+    _lastRemovedNote = _cards[index];
+    _lastRemovedIndex = index;
+
+    setState(() {
+      _cards.removeAt(index);
+
+      NoteHelper().deleteNote(_lastRemovedNote.id);
+    });
+
+    final snack = SnackBar(
+      content: Text("Note deleted"),
+      duration: Duration(seconds: 2),
+      action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _cards.insert(_lastRemovedIndex, _lastRemovedNote);
+
+              NoteHelper().newNote(
+                  _lastRemovedNote.source,
+                  color: _lastRemovedNote.color,
+                  createTime: _lastRemovedNote.createTime
+              );
+            });
+          }
+      )
+    );
+
+    _scaffoldKey.currentState.showSnackBar(snack);
+  }
+
+  void _copyNote(int index) {
+    final note = _cards[index];
+
+    NoteHelper().newNote(note.source, color: note.color).then((note) {
+      setState(() {
+        _cards.add(note);
+      });
+    });
   }
 }
