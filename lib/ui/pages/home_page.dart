@@ -38,10 +38,11 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        floatingActionButton: _cardsloaded && _cards.isNotEmpty ? FloatingActionButton(
+        floatingActionButton: _selectedNoteIndex == null && _cardsloaded && _cards.isNotEmpty ? FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: _createNewCard,
         ) : null,
+        bottomSheet: _selectedNoteIndex != null ? _bottomSheet(context) : null,
       body: _cardsList()
         /*child: DragAndDropList(
             _cards.length,
@@ -97,9 +98,16 @@ class _HomePageState extends State<HomePage> {
         onLongPress: () {
           _showOptions(context, index);
         },
+        onTap: () {
+          if(_selectedNoteIndex != null && _selectedNoteIndex != index)
+            setState(() {
+              _selectedNoteIndex = null;
+            });
+        },
         child: NoteCard(
             _cards[index],
             key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()),
+            onScaleFullscreen: () { _selectedNoteIndex = null; },
             side: _selectedNoteIndex == index ? BorderSide(
               color: Colors.grey.shade500,
               width: 4
@@ -173,57 +181,49 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedNoteIndex = index;
     });
-    Future<void> modal = showModalBottomSheet<void>(
-        context: context,
-        builder: (context) {
-          return BottomSheet(
-            elevation: 4,
-            onClosing: () { // not working: https://github.com/flutter/flutter/issues/27600
-              setState(() {
-                _selectedNoteIndex = null;
-              });
-            },
-            builder: (context) {
-              return Container(
-                padding: EdgeInsets.all(2),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Text(
-                        "Options",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.content_copy),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _copyNote(index);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _deleteNote(index);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }
-    );
-
-    modal.then((void v) => setState((){
-      _selectedNoteIndex = null;
-    }));
   }
+
+  Widget _bottomSheet(BuildContext context) => BottomSheet(
+    elevation: 4,
+    onClosing: () { // not working: https://github.com/flutter/flutter/issues/27600
+      setState(() {
+        _selectedNoteIndex = null;
+      });
+    },
+    builder: (context) {
+      return Container(
+        padding: EdgeInsets.all(2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                "Options",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.content_copy),
+              onPressed: () {
+                Navigator.pop(context);
+                _copyNote(_selectedNoteIndex);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteNote(_selectedNoteIndex);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
 
   Note _lastRemovedNote;
   int _lastRemovedIndex;
