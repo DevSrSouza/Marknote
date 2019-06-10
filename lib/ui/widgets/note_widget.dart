@@ -106,6 +106,9 @@ class _NoteWidgetState extends State<NoteWidget> {
             decoration: InputDecoration(
               border: InputBorder.none,
             ),
+            onChanged: (source) {
+              widget.note.source = source;
+            },
           ) : MarkdownBody(
             data: widget.note.source,
             styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
