@@ -34,23 +34,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text("MarkNote"),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: widget.themeIndicator,
-              onPressed: widget.switchTheme,
-            )
-          ],
-        ),
-        floatingActionButton: _selectedNoteIndex == null
-            && _cardStatus == _CardListStatus.loaded
-            && _cards.isNotEmpty ? _newNoteButton() : null,
-        bottomSheet: _selectedNoteIndex != null ? _bottomSheet(context) : null,
-        body: _body(),
+    return WillPopScope(
+      onWillPop: () {
+        if(_selectedNoteIndex != null) {
+          setState(() {
+            _selectedNoteIndex = null;
+          });
+          return Future.value(false);
+        } else return Future.value(true);
+      },
+      child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            title: Text("MarkNote"),
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                icon: widget.themeIndicator,
+                onPressed: widget.switchTheme,
+              )
+            ],
+          ),
+          floatingActionButton: _selectedNoteIndex == null
+              && _cardStatus == _CardListStatus.loaded
+              && _cards.isNotEmpty ? _newNoteButton() : null,
+          bottomSheet: _selectedNoteIndex != null ? _bottomSheet(context) : null,
+          body: _body(),
+      ),
     );
   }
 
