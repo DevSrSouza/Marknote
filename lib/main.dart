@@ -7,17 +7,20 @@ void main() => runApp(
 
 class MarkNote extends StatefulWidget {
 
+  static final purple = Color(0xFF512DA8);
+
   final ThemeData dark = ThemeData.dark().copyWith(
-      primaryColor: Colors.deepPurple,
+      primaryColor: purple,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: Colors.deepPurple
+        backgroundColor: purple,
+        foregroundColor: Colors.white
       ),
       cardColor: Colors.grey.shade800
   );
   final ThemeData light = ThemeData.light().copyWith(
-      primaryColor: Colors.deepPurple,
+      primaryColor: purple,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.deepPurple
+          backgroundColor: purple
       )
   );
 
@@ -57,7 +60,8 @@ class _MarkNoteState extends State<MarkNote> {
       title: "MarkNote",
       home: HomePage(Icon(_indicator), _switchTheme),
       theme: _theme,
-      darkTheme: ThemeData.dark(),
+      darkTheme: widget.dark,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

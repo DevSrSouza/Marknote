@@ -100,7 +100,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             keyboardType: TextInputType.multiline,
             controller: _editController,
             style: TextStyle(
-                fontSize: 19,
+                fontSize: 18,
                 fontFamily: "SourceCodePro"
             ),
             decoration: InputDecoration(
@@ -114,20 +114,14 @@ class _NoteWidgetState extends State<NoteWidget> {
             styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
               blockquoteDecoration: new BoxDecoration(
                   color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade400 ?? Theme.of(context).cardColor,
-                  borderRadius: new BorderRadius.circular(13.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4.0,
-                    )
-                  ]
+                  borderRadius: new BorderRadius.circular(4.0),
               ),
               code: TextStyle(
                   fontFamily: "SourceCodePro"
               ),
               codeblockDecoration: new BoxDecoration(
                   color: Theme.of(context).cardColor,
-                  borderRadius: new BorderRadius.circular(18.0)
+                  borderRadius: new BorderRadius.circular(4.0)
               ),
             ),
             onTapLink: (link) async {

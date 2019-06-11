@@ -36,20 +36,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.11"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
-  dragable_flutter_list:
-    dependency: "direct main"
-    description:
-      name: dragable_flutter_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -67,6 +53,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gradient_widgets:
+    dependency: "direct main"
+    description:
+      name: gradient_widgets
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   markdown:
     dependency: transitive
     description:

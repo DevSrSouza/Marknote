@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
 import 'package:marknote/ui/widgets/notecard.dart';
-import 'package:dragable_flutter_list/dragable_flutter_list.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -49,35 +48,18 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: _selectedNoteIndex == null
             && _cardStatus == _CardListStatus.loaded
-            && _cards.isNotEmpty ? FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: _createNewCard,
-        ) : null,
+            && _cards.isNotEmpty ? _newNoteButton() : null,
         bottomSheet: _selectedNoteIndex != null ? _bottomSheet(context) : null,
         body: _body(),
-        /*child: DragAndDropList(
-            _cards.length,
-            scrollController: _scrollController,
-            onDragFinish: (before, after) {
-              var aux = _cards[after];
-              _cards[after] = _cards[before];
-              _cards[before] = aux;
-            },
-            canDrag: (index) {
-              return !_cards[index].edit;
-            },
-            canBeDraggedTo: (one, two) => true,
-            dragElevation: 5.0,
-            itemBuilder: (context, index) => NoteCard(_cards[index], key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()))
-        )*/
-        //onReorder: (int actual, int next) {},
-        //children: _cards.map((e) => NoteCard(e, key: Key(DateTime.now().millisecondsSinceEpoch.toString()))).toList(),
-        //scrollDirection: Axis.vertical,
-      //),
     );
   }
 
-  void _createNewCard() {
+  Widget _newNoteButton() => FloatingActionButton(
+    child: Icon(Icons.add),
+    onPressed: _createNewNote,
+  );
+
+  void _createNewNote() {
     NoteHelper().newNote("# Write here!").then((note) {
       setState(() {
         _cards.add(note);
@@ -138,12 +120,7 @@ class _HomePageState extends State<HomePage> {
       );
     },
   ) : Center(
-    child: FloatingActionButton(
-      child: Icon(Icons.add),
-      onPressed: () {
-        _createNewCard();
-      },
-    ),
+    child: _newNoteButton(),
   );
 
   Widget _waitingCards() => Center(
