@@ -37,9 +37,7 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () {
         if(_selectedNoteIndex != null) {
-          setState(() {
-            _selectedNoteIndex = null;
-          });
+          _unselectNote();
           return Future.value(false);
         } else return Future.value(true);
       },
@@ -90,6 +88,10 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedNoteIndex = null;
 
+  void _unselectNote() {
+    _selectedNoteIndex = null;
+  }
+
   Widget _body() {
     switch(_cardStatus) {
       case _CardListStatus.loaded:
@@ -114,14 +116,12 @@ class _HomePageState extends State<HomePage> {
         },
         onTap: () {
           if(_selectedNoteIndex != null && _selectedNoteIndex != index)
-            setState(() {
-              _selectedNoteIndex = null;
-            });
+            setState(_unselectNote);
         },
         child: NoteCard(
             _cards[index],
             key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()),
-            onScaleFullscreen: () { _selectedNoteIndex = null; },
+            onScaleFullscreen: _unselectNote,
             side: _selectedNoteIndex == index ? BorderSide(
               color: Colors.grey.shade500,
               width: 4
@@ -188,11 +188,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _bottomSheet(BuildContext context) => BottomSheet(
     elevation: 8,
-    onClosing: () { // not working: https://github.com/flutter/flutter/issues/27600
-      setState(() {
-        _selectedNoteIndex = null;
-      });
-    },
+    onClosing: () => setState(_unselectNote), // not working: https://github.com/flutter/flutter/issues/27600
     builder: (context) {
       return Container(
         color: Theme.of(context).cardColor,
@@ -201,12 +197,13 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: Text(
-                "Options",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () => setState(_unselectNote),
+            ),
+            Text(
+              "Options",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Spacer(),
             IconButton(
@@ -235,7 +232,7 @@ class _HomePageState extends State<HomePage> {
     _lastRemovedIndex = index;
 
     setState(() {
-      _selectedNoteIndex = null;
+      _unselectNote();
       _cards.removeAt(index);
     });
 
@@ -265,7 +262,7 @@ class _HomePageState extends State<HomePage> {
 
     NoteHelper().newNote(note.source, color: note.color).then((note) {
       setState(() {
-        _selectedNoteIndex = null;
+        _unselectNote();
         _cards.add(note);
       });
     });
