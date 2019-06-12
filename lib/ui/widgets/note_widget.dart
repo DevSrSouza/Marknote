@@ -111,19 +111,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             },
           ) : MarkdownBody(
             data: widget.note.source,
-            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-              blockquoteDecoration: new BoxDecoration(
-                  color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade400 ?? Theme.of(context).cardColor,
-                  borderRadius: new BorderRadius.circular(4.0),
-              ),
-              code: TextStyle(
-                  fontFamily: "SourceCodePro"
-              ),
-              codeblockDecoration: new BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: new BorderRadius.circular(4.0)
-              ),
-            ),
+            styleSheet: _style(context),
             onTapLink: (link) async {
               if (await canLaunch(link)) {
                 await launch(link);
@@ -158,6 +146,24 @@ class _NoteWidgetState extends State<NoteWidget> {
       Icons.invert_colors_off,
       theme.iconTheme.color,
       () {_removeColor();},
+    );
+  }
+
+  MarkdownStyleSheet _style(BuildContext context) {
+    final theme = MarkdownStyleSheet.fromTheme(Theme.of(context));
+    return theme.copyWith(
+      blockquoteDecoration: BoxDecoration(
+        color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade400
+            ?? Theme.of(context).cardColor,
+        borderRadius: new BorderRadius.circular(4.0),
+      ),
+      code: theme.code.copyWith(
+          fontFamily: "SourceCodePro"
+      ),
+      codeblockDecoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: new BorderRadius.circular(4.0)
+      ),
     );
   }
 }
