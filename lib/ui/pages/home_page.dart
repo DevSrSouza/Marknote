@@ -37,14 +37,14 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () {
         if(_selectedNoteIndex != null) {
-          _unselectNote();
+          setState(_unselectNote);
           return Future.value(false);
         } else return Future.value(true);
       },
       child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text("MarkNote"),
+            title: Text("Marknote"),
             centerTitle: true,
             actions: <Widget>[
               IconButton(
