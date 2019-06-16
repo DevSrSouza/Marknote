@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
@@ -53,75 +54,74 @@ class _NoteWidgetState extends State<NoteWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return Padding(padding: EdgeInsets.fromLTRB(2, 4, widget.note.edit ? 0 : 6, 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    _defaultColor(context),
-                    for(NoteColor color in NoteColor.values)
-                      _colorSwitcher(color)
-                  ],
-                ),
-              ),
-            ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Row(
+            Flexible(
+              child: Column(
                 children: <Widget>[
-                  ...widget.actions,
+                  Row(children: widget.actions,),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: SmallIcon(
-                      Icon(
-                        Icons.remove_red_eye,
-                        color: widget.note.edit ? Colors.blueAccent : Colors.grey,
+                    padding: const EdgeInsets.only(top: 8, left: 4, right: 4),
+                    child: widget.note.edit ? TextField(
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      controller: _editController,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "SourceCodePro"
                       ),
-                      onPressed: _switchToEditMode,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (source) {
+                        widget.note.source = source;
+                      },
+                    ) : MarkdownBody(
+                      data: widget.note.source,
+                      styleSheet: _style(context),
+                      onTapLink: (link) async {
+                        if (await canLaunch(link)) {
+                          await launch(link);
+                        } else {
+                          throw 'Could not launch $link';
+                        }
+                      },
                     ),
-                  ),
+                  )
                 ],
               ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SmallIcon(
+                  Icon(
+                    Icons.edit,
+                    color: widget.note.edit ? Colors.blueAccent : Colors.grey,
+                  ),
+                  onPressed: _switchToEditMode,
+                ),
+                if(widget.note.edit) Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                    child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            _defaultColor(context),
+                            for(NoteColor color in NoteColor.values)
+                              _colorSwitcher(color)
+                          ],
+                        )
+                    )
+                )
+              ],
             )
           ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 15, left: 22, right: 22),
-          child: widget.note.edit ? TextField(
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            controller: _editController,
-            style: TextStyle(
-                fontSize: 18,
-                fontFamily: "SourceCodePro"
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-            ),
-            onChanged: (source) {
-              widget.note.source = source;
-            },
-          ) : MarkdownBody(
-            data: widget.note.source,
-            styleSheet: _style(context),
-            onTapLink: (link) async {
-              if (await canLaunch(link)) {
-                await launch(link);
-              } else {
-                throw 'Could not launch $link';
-              }
-            },
-          ),
-        ),
-      ],
+        )
     );
   }
 
