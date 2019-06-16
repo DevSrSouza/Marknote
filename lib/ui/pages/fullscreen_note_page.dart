@@ -38,26 +38,50 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
         child: Scaffold(
           backgroundColor: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: NoteWidget(
-                  widget.note,
-                  editMinLines: 24,
-                  actions: <Widget>[
-                    SmallIcon(
-                      Icon(Icons.fullscreen_exit),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
-                  onSwitchColor: _switchColor,
-                ),
-              ),
+            child: LayoutBuilder(
+              builder: (_, size) {
+                return SingleChildScrollView(
+                  child: Container(
+                    child: NoteWidget(
+                      widget.note,
+                      editMinLines: _calculateEditMinLines(size),
+                      actions: <Widget>[
+                        SmallIcon(
+                          Icon(Icons.fullscreen_exit),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                      onSwitchColor: _switchColor,
+                    ),
+                  ),
+                );
+              }
             ),
           ),
         ),
       ),
     );
+  }
+
+  int _calculateEditMinLines(BoxConstraints size) {
+    final style = TextStyle(
+        fontSize: 18,
+        fontFamily: "SourceCodePro"
+    );
+
+    final text = TextSpan(
+      text: widget.note.source,
+      style: style,
+    );
+
+    final tp = TextPainter(
+      text: text,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.left,
+    );
+
+    return (size.maxHeight / tp.preferredLineHeight).floor()-1;
   }
 }
