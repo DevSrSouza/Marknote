@@ -15,12 +15,18 @@ class MarkNote extends StatefulWidget {
         backgroundColor: purple,
         foregroundColor: Colors.white
       ),
-      cardColor: Colors.grey.shade800
+      cardColor: Colors.grey.shade800,
+      iconTheme: IconThemeData(
+        color: Colors.grey
+      )
   );
   final ThemeData light = ThemeData.light().copyWith(
       primaryColor: purple,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: purple
+      ),
+      iconTheme: IconThemeData(
+          color: Colors.grey
       )
   );
 

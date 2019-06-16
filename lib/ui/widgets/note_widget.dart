@@ -86,7 +86,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                 SmallIcon(
                   Icon(
                     Icons.edit,
-                    color: widget.note.edit ? Colors.blueAccent : Colors.grey,
+                    color: widget.note.edit ? Colors.blueAccent : Theme.of(context).iconTheme.color,
                   ),
                   onPressed: _switchToEditMode,
                 ),
