@@ -14,8 +14,9 @@ class NoteWidget extends StatefulWidget {
   final Note note;
   final List<Widget> actions;
   final ColorSwitchCallback onSwitchColor;
+  final int editMinLines;
 
-  const NoteWidget(this.note, {Key key, this.actions = const [], this.onSwitchColor}) : super(key: key);
+  const NoteWidget(this.note, {Key key, this.actions = const [], this.onSwitchColor, this.editMinLines = 1}) : super(key: key);
 
   @override
   _NoteWidgetState createState() => _NoteWidgetState();
@@ -64,21 +65,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                   Row(children: widget.actions,),
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4, right: 4),
-                    child: widget.note.edit ? TextField(
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      controller: _editController,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "SourceCodePro"
-                      ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (source) {
-                        widget.note.source = source;
-                      },
-                    ) : MarkdownBody(
+                    child: widget.note.edit ? _editField() : MarkdownBody(
                       data: widget.note.source,
                       styleSheet: _style(context),
                       onTapLink: (link) async {
@@ -124,6 +111,23 @@ class _NoteWidgetState extends State<NoteWidget> {
         )
     );
   }
+
+  Widget _editField() => TextField(
+    maxLines: null,
+    minLines: widget.editMinLines,
+    keyboardType: TextInputType.multiline,
+    controller: _editController,
+    style: TextStyle(
+        fontSize: 18,
+        fontFamily: "SourceCodePro"
+    ),
+    decoration: InputDecoration(
+      border: InputBorder.none,
+    ),
+    onChanged: (source) {
+      widget.note.source = source;
+    },
+  );
 
   Widget _smallIconButton(
       IconData icon,

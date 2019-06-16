@@ -42,6 +42,7 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
               child: Container(
                 child: NoteWidget(
                   widget.note,
+                  editMinLines: 24,
                   actions: <Widget>[
                     SmallIcon(
                       Icon(Icons.fullscreen_exit),

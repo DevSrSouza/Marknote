@@ -54,6 +54,7 @@ class _NoteCardState extends State<NoteCard> {
                 child: NoteWidget(
                     widget.note,
                     onSwitchColor: _switchColor,
+                    editMinLines: 5,
                     actions: <Widget>[
                       SmallIcon(
                         Icon(Icons.fullscreen),
