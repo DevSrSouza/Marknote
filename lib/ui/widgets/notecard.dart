@@ -9,10 +9,13 @@ import 'package:marknote/ui/widgets/small_icon.dart';
 class NoteCard extends StatefulWidget {
 
   final Note note;
-  final void Function() onScaleFullscreen;
+  final VoidCallback onScaleFullscreen;
+  final VoidCallback onJoinEditMode;
+  final VoidCallback onLeaveEditMode;
+  final FocusChangeCallback onEditFieldFocusChange;
   final BorderSide side;
 
-  const NoteCard(this.note, {Key key, this.onScaleFullscreen, this.side}) : super(key: key);
+  const NoteCard(this.note, {Key key, this.onScaleFullscreen, this.onJoinEditMode, this.onLeaveEditMode, this.onEditFieldFocusChange, this.side}) : super(key: key);
 
   @override
   _NoteCardState createState() => _NoteCardState();
@@ -55,6 +58,9 @@ class _NoteCardState extends State<NoteCard> {
                     widget.note,
                     onSwitchColor: _switchColor,
                     editMinLines: 5,
+                    onJoinEditMode: widget.onJoinEditMode,
+                    onLeaveEditMode: widget.onLeaveEditMode,
+                    onEditFieldFocusChange: widget.onEditFieldFocusChange,
                     actions: <Widget>[
                       SmallIcon(
                         Icon(Icons.fullscreen),

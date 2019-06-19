@@ -23,6 +23,8 @@ dependencies:
   url_launcher: ^5.0.2
   path_provider: ^1.1.0
   sqflite: ^1.1.5
+  provider: ^3.0.0+1
+  after_layout: ^1.0.7+1
 
 dev_dependencies:
   flutter_test:

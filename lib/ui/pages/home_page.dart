@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/note.dart';
-import 'package:marknote/ui/widgets/notecard.dart';
+import 'package:marknote/provider/note_editing_provider.dart';
+import 'package:marknote/provider/notes_provider.dart';
+import 'package:marknote/ui/widgets/create_note_button.dart';
+import 'package:marknote/ui/widgets/note_list.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -15,180 +18,78 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-enum _CardListStatus { loaded, not_loaded, fail_load }
-
 class _HomePageState extends State<HomePage> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _scrollController = ScrollController();
-  var _cardStatus = _CardListStatus.not_loaded;
-
-  List<Note> _cards = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadCardList();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final notesProvider = Provider.of<NotesProvider>(context);
+    final editingProvider = NoteEditingProvider();
     return WillPopScope(
       onWillPop: () {
-        if(_selectedNoteIndex != null) {
-          setState(_unselectNote);
+        if(notesProvider.selectedNoteIndex != null) {
+          _unselectNote(notesProvider);
           return Future.value(false);
         } else return Future.value(true);
       },
-      child: Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            title: Text("Marknote"),
-            centerTitle: true,
-            actions: <Widget>[
-              IconButton(
-                icon: widget.themeIndicator,
-                onPressed: widget.switchTheme,
-              )
-            ],
-          ),
-          floatingActionButton: _selectedNoteIndex == null
-              && _cardStatus == _CardListStatus.loaded
-              && _cards.isNotEmpty ? _newNoteButton() : null,
-          bottomSheet: _selectedNoteIndex != null ? _bottomSheet(context) : null,
-          body: _body(),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+        child: Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: Text("Marknote"),
+              centerTitle: true,
+              actions: <Widget>[
+                IconButton(
+                  icon: widget.themeIndicator,
+                  onPressed: widget.switchTheme,
+                )
+              ],
+            ),
+            floatingActionButton: ChangeNotifierProvider<NoteEditingProvider>.value(
+                value: editingProvider,
+                child: _newNoteButton()
+            ),
+            bottomSheet: notesProvider.selectedNoteIndex != null ? _bottomSheet(context, notesProvider) : null,
+            body: NoteList(
+              editingProvider: editingProvider,
+              scrollController: _scrollController,
+              onLongPressNote: (index, note) => _showOptions(notesProvider, index),
+            )
+        ),
       ),
     );
   }
 
-  Widget _newNoteButton() => FloatingActionButton(
-    child: Icon(Icons.add),
-    onPressed: _createNewNote,
-  );
+  Widget _newNoteButton() => CreateNoteButton(onCreateNote: _onCreateNote);
 
-  void _createNewNote() {
-    NoteHelper().newNote("## Edit in pencil above.").then((note) {
-      setState(() {
-        _cards.add(note);
-      });
-
-      Future.delayed(Duration(milliseconds: 100)).then((value) {
-        var scrollPosition = _scrollController.position;
-        if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
-          _scrollController.animateTo(
-              scrollPosition.maxScrollExtent,
-              duration: new Duration(milliseconds: 300),
-              curve: Curves.easeOut
-          );
-        }
-      });
+  void _onCreateNote() {
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
+      var scrollPosition = _scrollController.position;
+      if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
+        _scrollController.animateTo(
+            scrollPosition.maxScrollExtent,
+            duration: new Duration(milliseconds: 300),
+            curve: Curves.easeOut
+        );
+      }
     });
   }
 
-  int _selectedNoteIndex = null;
-
-  void _unselectNote() {
-    _selectedNoteIndex = null;
+  void _unselectNote(NotesProvider provider) {
+    provider.updateSelectedNote(null);
   }
 
-  Widget _body() {
-    switch(_cardStatus) {
-      case _CardListStatus.loaded:
-        return _cardsListView();
-      case _CardListStatus.not_loaded:
-        return _waitingCards();
-      case _CardListStatus.fail_load:
-        return _failLoad();
-    }
+  void _showOptions(NotesProvider provider, int index) {
+    provider.updateSelectedNote(index);
   }
 
-  Widget _cardsListView() => _cards.isNotEmpty ? ListView.builder(
-    controller: _scrollController,
-    padding: const EdgeInsets.fromLTRB(30, 30, 30, 18),
-    itemCount: _cards.length,
-    shrinkWrap: true,
-    reverse: true,
-    itemBuilder: (context, index) {
-      return GestureDetector(
-        onLongPress: () {
-          _showOptions(context, index);
-        },
-        onTap: () {
-          if(_selectedNoteIndex != null && _selectedNoteIndex != index)
-            setState(_unselectNote);
-        },
-        child: NoteCard(
-            _cards[index],
-            key: Key(index.toString() + DateTime.now().millisecondsSinceEpoch.toString()),
-            onScaleFullscreen: _unselectNote,
-            side: _selectedNoteIndex == index ? BorderSide(
-              color: Colors.grey.shade500,
-              width: 4
-            ) : BorderSide.none,
-        ),
-      );
-    },
-  ) : Center(
-    child: _newNoteButton(),
-  );
-
-  Widget _waitingCards() => Center(
-    child: Container(
-      width: 200,
-      height: 200,
-      alignment: Alignment.center,
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-        strokeWidth: 5,
-      ),
-    ),
-  );
-
-  Widget _failLoad() => Center(
-    child: Container(
-      alignment: Alignment.center,
-      height: 100,
-      width: 150,
-      child: RaisedButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Reload"), Icon(Icons.refresh)
-          ],
-        ),
-        onPressed: () {
-          setState(() {
-            _cardStatus = _CardListStatus.not_loaded;
-          });
-          _loadCardList();
-        },
-      ),
-    ),
-  );
-
-  Widget _loadCardList() {
-    NoteHelper().getAllNotes().then((notes) {
-      setState(() {
-        _cards = notes;
-        _cardStatus = _CardListStatus.loaded;
-      });
-    }).catchError((e) {
-      setState(() {
-        _cardStatus = _CardListStatus.fail_load;
-      });
-    });
-  }
-
-  void _showOptions(BuildContext context, int index) {
-    setState(() {
-      _selectedNoteIndex = index;
-    });
-  }
-
-  Widget _bottomSheet(BuildContext context) => BottomSheet(
+  Widget _bottomSheet(BuildContext context, NotesProvider provider) => BottomSheet(
     elevation: 8,
-    onClosing: () => setState(_unselectNote), // not working: https://github.com/flutter/flutter/issues/27600
+    onClosing: () => _unselectNote(provider), // not working: https://github.com/flutter/flutter/issues/27600
     builder: (context) {
       return Container(
         color: Theme.of(context).cardColor,
@@ -199,7 +100,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.close),
-              onPressed: () => setState(_unselectNote),
+              onPressed: () => _unselectNote(provider),
             ),
             Text(
               "Options",
@@ -209,13 +110,13 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.content_copy),
               onPressed: () {
-                _copyNote(_selectedNoteIndex);
+                _copyNote(provider);
               },
             ),
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
-                _deleteNote(_selectedNoteIndex);
+                _deleteNote(provider);
               },
             ),
           ],
@@ -227,14 +128,12 @@ class _HomePageState extends State<HomePage> {
   Note _lastRemovedNote;
   int _lastRemovedIndex;
 
-  void _deleteNote(int index) {
-    _lastRemovedNote = _cards[index];
+  void _deleteNote(NotesProvider provider) {
+    final index = provider.selectedNoteIndex;
+    _lastRemovedNote = provider.notes[index];
     _lastRemovedIndex = index;
 
-    setState(() {
-      _unselectNote();
-      _cards.removeAt(index);
-    });
+    provider.removeAndUpdateSelectedNote(index, null);
 
     final snack = SnackBar(
       content: Text("Note deleted"),
@@ -242,9 +141,7 @@ class _HomePageState extends State<HomePage> {
       action: SnackBarAction(
           label: "Undo",
           onPressed: () {
-            setState(() {
-              _cards.insert(_lastRemovedIndex, _lastRemovedNote);
-            });
+            provider.insertNote(_lastRemovedIndex, _lastRemovedNote);
           }
       )
     );
@@ -257,13 +154,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _copyNote(int index) {
-    final note = _cards[index];
+  void _copyNote(NotesProvider provider) {
+    final note = provider.notes[provider.selectedNoteIndex];
 
     NoteHelper().newNote(note.source, color: note.color).then((note) {
       setState(() {
-        _unselectNote();
-        _cards.add(note);
+        _unselectNote(provider);
+        provider.notes.add(note);
       });
     });
   }

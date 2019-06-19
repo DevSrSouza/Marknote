@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:marknote/provider/notes_provider.dart';
 import 'package:marknote/ui/pages/home_page.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(
   MarkNote()
@@ -64,7 +66,10 @@ class _MarkNoteState extends State<MarkNote> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "MarkNote",
-      home: HomePage(Icon(_indicator), _switchTheme),
+      home: ChangeNotifierProvider<NotesProvider>(
+          builder: (_) => NotesProvider(),
+          child: HomePage(Icon(_indicator), _switchTheme)
+      ),
       theme: _theme,
       darkTheme: widget.dark,
       debugShowCheckedModeBanner: false,

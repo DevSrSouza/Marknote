@@ -1,0 +1,1 @@
+enum NoteListStatus { loaded, not_loaded, fail_load }

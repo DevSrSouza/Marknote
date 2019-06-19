@@ -8,15 +8,30 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:marknote/ui/widgets/small_icon.dart';
 
 typedef ColorSwitchCallback = void Function(NoteColor color);
+typedef FocusChangeCallback = void Function(bool hasFocus);
 
 class NoteWidget extends StatefulWidget {
 
   final Note note;
   final List<Widget> actions;
   final ColorSwitchCallback onSwitchColor;
+  final VoidCallback onJoinEditMode;
+  final VoidCallback onLeaveEditMode;
+  final FocusChangeCallback onEditFieldFocusChange;
   final int editMinLines;
 
-  const NoteWidget(this.note, {Key key, this.actions = const [], this.onSwitchColor, this.editMinLines = 1}) : super(key: key);
+  const NoteWidget(
+      this.note,
+      {
+        Key key,
+        this.actions = const [],
+        this.onSwitchColor,
+        this.onJoinEditMode,
+        this.onLeaveEditMode,
+        this.onEditFieldFocusChange,
+        this.editMinLines = 1
+      }
+  ) : super(key: key);
 
   @override
   _NoteWidgetState createState() => _NoteWidgetState();
@@ -25,20 +40,29 @@ class NoteWidget extends StatefulWidget {
 class _NoteWidgetState extends State<NoteWidget> {
 
   final _editController = TextEditingController();
+  final _focus = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _editController.text = widget.note.source;
+
+    _focus.addListener(() {
+      if(widget.onEditFieldFocusChange != null)
+        widget.onEditFieldFocusChange(_focus.hasFocus);
+    });
   }
 
   void _switchToEditMode() {
     setState(() {
       final note = widget.note;
       note.edit = !note.edit;
-
-      note.source = _editController.text;
-      if(note.edit == false) NoteHelper().updateSource(note);
+      
+      if(note.edit == false) {
+        note.source = _editController.text;
+        NoteHelper().updateSource(note);
+        if(widget.onLeaveEditMode != null) widget.onLeaveEditMode();
+      } else if(widget.onJoinEditMode != null) widget.onJoinEditMode();
     });
   }
   
@@ -117,6 +141,7 @@ class _NoteWidgetState extends State<NoteWidget> {
     minLines: widget.editMinLines,
     keyboardType: TextInputType.multiline,
     controller: _editController,
+    focusNode: _focus,
     style: TextStyle(
         fontSize: 18,
         fontFamily: "SourceCodePro"
