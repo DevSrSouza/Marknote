@@ -46,6 +46,12 @@ class NotesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void addAndUpdateSelectedNote(Note note, int selectedNote) {
+    _notes.add(note);
+    _selectedNoteIndex = selectedNote;
+    notifyListeners();
+  }
+
   void insertNote(int index, Note note) {
     _notes.insert(index, note);
     notifyListeners();

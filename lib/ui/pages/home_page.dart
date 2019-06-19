@@ -159,8 +159,7 @@ class _HomePageState extends State<HomePage> {
 
     NoteHelper().newNote(note.source, color: note.color).then((note) {
       setState(() {
-        _unselectNote(provider);
-        provider.notes.add(note);
+        provider.addAndUpdateSelectedNote(note, null);
       });
     });
   }

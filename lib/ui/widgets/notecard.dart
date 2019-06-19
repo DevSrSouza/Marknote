@@ -53,7 +53,7 @@ class _NoteCardState extends State<NoteCard> {
               ),
               elevation: 3,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 4, 4, 8),
+                padding: const EdgeInsets.fromLTRB(6, 4, 4, 10),
                 child: NoteWidget(
                     widget.note,
                     onSwitchColor: _switchColor,
