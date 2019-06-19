@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
   );
 
   void _createNewNote() {
-    NoteHelper().newNote("# Write here!").then((note) {
+    NoteHelper().newNote("## Edit in pencil above.").then((note) {
       setState(() {
         _cards.add(note);
       });
