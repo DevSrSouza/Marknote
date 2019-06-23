@@ -100,9 +100,9 @@ class NoteHelper {
     return lines.map((m) => fromMap(m)).toList();
   }
 
-  Future<void> close() async {
+  close() async {
     Database con = await database;
 
-    await con.close();
+    if(con.isOpen) await con.close();
   }
 }

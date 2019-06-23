@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marknote/helpers/note_helper.dart';
 import 'package:marknote/provider/notes_provider.dart';
 import 'package:marknote/ui/pages/home_page.dart';
 import 'package:provider/provider.dart';
@@ -74,6 +75,12 @@ class _MarkNoteState extends State<MarkNote> {
       darkTheme: widget.dark,
       debugShowCheckedModeBanner: false,
     );
+  }
+
+  @override
+  void dispose() {
+    NoteHelper().close();
+    super.dispose();
   }
 }
 
