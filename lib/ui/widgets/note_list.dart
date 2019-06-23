@@ -85,8 +85,8 @@ class _NoteListState extends State<NoteList> with AfterLayoutMixin<NoteList> {
       padding: const EdgeInsets.fromLTRB(30, 30, 30, 18),
       itemCount: notes.length,
       shrinkWrap: true,
-      reverse: true,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, i) {
+        final index = (notes.length -1) - i;
         final note = notes[index];
         return GestureDetector(
           onLongPress: () {

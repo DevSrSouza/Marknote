@@ -5,6 +5,7 @@ import 'package:marknote/provider/note_editing_provider.dart';
 import 'package:marknote/provider/notes_provider.dart';
 import 'package:marknote/ui/widgets/create_note_button.dart';
 import 'package:marknote/ui/widgets/note_list.dart';
+import 'package:marknote/utils.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+        onTap: () => removeFocus(context),
         child: Scaffold(
             key: _scaffoldKey,
             appBar: AppBar(
@@ -69,9 +70,9 @@ class _HomePageState extends State<HomePage> {
   void _onCreateNote() {
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       var scrollPosition = _scrollController.position;
-      if(scrollPosition.viewportDimension > scrollPosition.minScrollExtent) {
+      if(scrollPosition.viewportDimension < scrollPosition.maxScrollExtent) {
         _scrollController.animateTo(
-            scrollPosition.maxScrollExtent,
+            0.0,
             duration: new Duration(milliseconds: 300),
             curve: Curves.easeOut
         );
