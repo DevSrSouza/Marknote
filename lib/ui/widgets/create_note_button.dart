@@ -12,7 +12,11 @@ class CreateNoteButton extends StatefulWidget {
   final VoidCallback onCreateNote;
   final bool canHide;
 
-  const CreateNoteButton({Key key, this.onCreateNote, this.canHide = true}) : super(key: key);
+  const CreateNoteButton({
+    Key key,
+    this.onCreateNote,
+    this.canHide = true
+  }) : super(key: key);
 
   @override
   _CreateNoteButtonState createState() => _CreateNoteButtonState();

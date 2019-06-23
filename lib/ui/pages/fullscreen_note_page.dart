@@ -36,7 +36,7 @@ class _FullscreenNotePageState extends State<FullscreenNotePage> {
       child: Hero(
         tag: widget.note,
         child: Scaffold(
-          backgroundColor: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
+          backgroundColor: NoteColorHelper.getNoteColor(context, widget.note),
           body: SafeArea(
             child: LayoutBuilder(
               builder: (_, size) {

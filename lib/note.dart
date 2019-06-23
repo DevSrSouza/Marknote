@@ -18,6 +18,9 @@ class NoteColorHelper {
         return Colors.deepPurple;
     }
   }
+
+  static Color getNoteColor(BuildContext context, Note note) =>
+      getMaterialColor(note.color)?.shade300 ?? Theme.of(context).cardColor;
 }
 
 class Note {

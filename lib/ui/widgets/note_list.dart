@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marknote/provider/note_editing_provider.dart';
 import 'package:marknote/ui/widgets/create_note_button.dart';
+import 'package:marknote/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:marknote/enums/note_list_status.dart';
@@ -63,7 +64,6 @@ class _NoteListState extends State<NoteList> with AfterLayoutMixin<NoteList> {
   }
 
   void onStartEditNote(NotesProvider notesProvider, Note note) {
-    print("FUCKKK");
     print(note == notesProvider.editing);
     if(note == notesProvider.editing)
       widget.editingProvider.updateIsEditing(true);
@@ -96,7 +96,7 @@ class _NoteListState extends State<NoteList> with AfterLayoutMixin<NoteList> {
             if (provider.selectedNoteIndex != null && provider.selectedNoteIndex != index)
               _unselectNote(provider);
             if(widget.editingProvider.isEditing && provider.editing != note)
-              FocusScope.of(context).requestFocus(new FocusNode());
+              removeFocus(context);
           },
           child: NoteCard(
             note,
@@ -105,10 +105,8 @@ class _NoteListState extends State<NoteList> with AfterLayoutMixin<NoteList> {
             onJoinEditMode: () => onJoinEditMode(provider, note),
             onLeaveEditMode: () => onLeaveEditMode(provider, note),
             onEditFieldFocusChange: (focus) {
-              if (focus)
-                onStartEditNote(provider, note);
-              else
-                onStopEditNote(provider, note);
+              if (focus) onStartEditNote(provider, note);
+              else onStopEditNote(provider, note);
             },
             side: provider.selectedNoteIndex == index ? BorderSide(
                 color: Colors.grey.shade500,

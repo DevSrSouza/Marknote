@@ -15,7 +15,17 @@ class NoteCard extends StatefulWidget {
   final FocusChangeCallback onEditFieldFocusChange;
   final BorderSide side;
 
-  const NoteCard(this.note, {Key key, this.onScaleFullscreen, this.onJoinEditMode, this.onLeaveEditMode, this.onEditFieldFocusChange, this.side}) : super(key: key);
+  const NoteCard(
+      this.note,
+      {
+        Key key,
+        this.onScaleFullscreen,
+        this.onJoinEditMode,
+        this.onLeaveEditMode,
+        this.onEditFieldFocusChange,
+        this.side
+      }
+  ) : super(key: key);
 
   @override
   _NoteCardState createState() => _NoteCardState();
@@ -46,7 +56,7 @@ class _NoteCardState extends State<NoteCard> {
           child: Hero(
             tag: widget.note,
             child: Card(
-              color: NoteColorHelper.getMaterialColor(widget.note.color)?.shade300 ?? Theme.of(context).cardColor,
+              color: NoteColorHelper.getNoteColor(context, widget.note),
               shape: RoundedRectangleBorder(
                   side: widget.side ?? BorderSide.none,
                   borderRadius: BorderRadius.circular(23.0)
