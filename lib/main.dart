@@ -66,7 +66,7 @@ class _MarkNoteState extends State<MarkNote> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "MarkNote",
+      title: "Marknote",
       home: ChangeNotifierProvider<NotesProvider>(
           builder: (_) => NotesProvider(),
           child: HomePage(Icon(_indicator), _switchTheme)
